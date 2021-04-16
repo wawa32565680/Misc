@@ -6,7 +6,7 @@
 
 char map[20][20]; //map[y][x]
 const int start_x = 4, start_y = 3, max_x = 10, max_y = 20;
-int con_x, con_y, is_stop;
+int con_x, con_y, is_stop, type_id[2], first = 0;
 char blocks = 'O';
 int score = 0;
 // 0:方形 1:長條 2:L型 3:ㄣ 型 4:T型 
@@ -87,14 +87,22 @@ int is_rotate_able();
 int main(){
 	srand(time(0));
 	char c;
-	int i, j, t, game_over = 0, type_id;
+	int i, j, t, game_over = 0;
 	for (i = 0 ; i < max_y ; i++)
 		for (j = 0;  j < max_x ; j++)
 			map[i][j] = ' ';
 	while (!game_over){
 		if (is_gameover())
 			break;
-		type_id = rand() % 7;
+		if (!first){
+			type_id[0] = rand() % 7;
+			type_id[1] = rand() % 7;
+			first = !first;
+		}
+		else{
+			type_id[0] = type_id[1];
+			type_id[1] = rand() % 7;
+		}
 		con_y = start_y;
 		if (!is_draw_able(start_x)){
 			for (i = 0 ; i < max_x ; i++){
@@ -108,9 +116,8 @@ int main(){
 		}
 		else
 			con_x = start_x;
-		//con_x = start_x;
-		//con_y = start_y + 3;
-		set_blocks(type_id);
+		
+		set_blocks(type_id[0]);
 		draw_blocks(0,0);
 		re_fresh();
 		is_stop = 0;
@@ -157,19 +164,28 @@ int is_draw_able(int x){
 
 void re_fresh(){
 	system("CLS");
-	int i, j;
+	int i, j, k, z = 0;
 	for (i = 0 ; i < max_y ; i++){
 		for (j = 0 ; j < max_x ; j++){
 			printf("%c", map[i][j]);
 		}
 		printf("|");
-		if (i == 3)
+		if (i == 1)
+			printf("     下一個方塊是:");
+		else if (i == 2 || i == 3 || i == 4 || i == 5){
+			printf("     ");
+			for (k = 0 ; k < 4 ; k++){
+				to_block(shape[type_id[1]][3 - z][k]);
+			}
+			z++;
+		}
+		else if (i == 8)
 			printf("     你以削除%d條線", score);
-		else if (i == 5)
+		else if (i == 10)
 			printf("     W:掉落至最底部");
-		else if (i == 6)
+		else if (i == 11)
 			printf("     A:左移  S:下移  D:右移");
-		else if (i == 7)
+		else if (i == 12)
 			printf("     空白鍵:旋轉");
 		printf("\n");
 	}
