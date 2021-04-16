@@ -58,6 +58,10 @@ const int shape[7][4][4] = {
 
 int long_type[4][4];
 
+void press_to_start(){
+	printf("=====按下任何按鍵開始遊戲=====");
+	getch();
+}
 
 int is_touch_down(); //判斷是否碰觸下方方塊 
 int is_touch_wall(char); //判斷是否碰觸左右方塊 
@@ -91,6 +95,7 @@ int main(){
 	for (i = 0 ; i < max_y ; i++)
 		for (j = 0;  j < max_x ; j++)
 			map[i][j] = ' ';
+	press_to_start();
 	while (!game_over){
 		if (is_gameover())
 			break;
@@ -140,6 +145,7 @@ int main(){
 		blocks_check();
 	}
 	ending();
+	system("pause");
 }
 
 int is_gameover(){
@@ -292,7 +298,7 @@ void blocks_fall(){
 
 void ending(){
 	system("CLS");
-	printf("~~GAME OVER~~\n你總共消除了%d條線\n總分為%d分", line, score);
+	printf("~~GAME OVER~~\n你總共消除了%d條線\n總分為%d分\n", line, score);
 }
 
 
