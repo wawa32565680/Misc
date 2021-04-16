@@ -3,10 +3,10 @@
 #include <windows.h>
 #include <conio.h>
 int box[4][4] = {
-	{0,0,0,0},
-	{0,0,0,0},
-	{0,1,0,0},
-	{1,1,1,0} 
+	{1,0,0,0},
+	{1,0,0,0},
+	{1,0,0,0},
+	{1,0,0,0} 
 };
 
 char map[20][20];
@@ -19,28 +19,29 @@ int is_wall(int[4][4]);//¬O§_¸IÀð
 void fix(int[4][4]);
 void re_fresh();
 int main(){
-	re_fresh();
+	int t, is = 0;
 	char c;
-	int t, is_quit = 0;
-	while (!is_quit){
+	re_fresh();
+	while (!is){
 		t = 20000;
 		while (t > 0){
 			if (kbhit()){
 				c = getch();
-				if (c == 'Q' || c == 'q'){
-					is_quit = 1;
-					break;
-				}
-				else if (c == ' '){
+				if (c == ' '){
 					turn_angle(box);
 					fix(box);
 					re_fresh();
+				}
+				else if (c == 'Q' || c == 'q'){
+					is = 1;
+					break;
 				}
 			}
 			t--;
 		}
 		re_fresh();
 	}
+	
 }
 void re_fresh(){
 	system("CLS");
