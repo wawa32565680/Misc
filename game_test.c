@@ -11,19 +11,40 @@ char blocks = '#';
 
 // 0:方形 1:長條 2:L型 3:ㄣ 型 4:T型 
 
-int box[4][4] = {
-	{0,1,0,0},
-	{1,1,0,0},
-	{0,1,0,0},
-	{0,0,0,0}
+const int shape[5][4][4] = {
+	{
+		{1,1,0,0},
+		{1,1,0,0},
+		{0,0,0,0},
+		{0,0,0,0}
+	},
+	{
+		{1,0,0,0},
+		{1,0,0,0},
+		{1,0,0,0},
+		{1,0,0,0}
+	},
+	{
+		{1,1,0,0},
+		{1,0,0,0},
+		{1,0,0,0},
+		{0,0,0,0}
+	},
+	{
+		{0,1,1,0},
+		{1,1,0,0},
+		{0,0,0,0},
+		{0,0,0,0}
+	},
+	{
+		{1,0,0,0},
+		{1,1,0,0},
+		{1,0,0,0},
+		{0,0,0,0}
+	}
 };
 
-int long_type[4][4] = {
-	{1,1,1,0},
-	{1,0,0,0},
-	{0,0,0,0},
-	{0,0,0,0}
-};
+int long_type[4][4];
 
 
 int is_touch_down(); //判斷是否碰觸下方方塊 
@@ -36,8 +57,15 @@ void blocks_fall(); //方塊自然落下
 void blocks_move(char); //移動方塊 
 void new_blocks_move(char); // 新版移動方塊 
 void move_set(char); //移動方塊(函數) 
-void rotate(int[4][4]);
+void rotate(int[4][4]);//轉向
+void fix_place();//轉向後校正位置 
+void set_blocks(int);//設定顯示方塊 
+void clear_old_blocks();//清除舊方塊 
 void ending();
+
+//======== 轉向輔助 
+int is_wall();
+//======== 轉向輔助
 
 int main(){
 	srand(time(0));
@@ -49,10 +77,11 @@ int main(){
 	while (!game_over){
 		if (map[start_y][start_x] != ' ')
 			break;
-		//type_id = rand() % 5;
+		type_id = rand() % 5;
 		con_x = start_x;
 		con_y = start_y + 4;
 		//map[con_y][con_x] = blocks;
+		set_blocks(type_id);
 		for (i = 0 ; i < 4 ; i++){
 			for (j = 0 ; j < 4 ; j++){
 				map[con_y - i][con_x + j] = to_block(long_type[i][j]);
@@ -120,7 +149,7 @@ void down_fill(int pai){
 		}
 	}
 }
-
+//控制移動方塊
 void new_blocks_move(char way){
 	switch (way){
 		case 'A':
@@ -138,109 +167,20 @@ void new_blocks_move(char way){
 			if (is_touch_down() && con_y < max_y)
 				move_set('s');
 				break;
-	}
-}
-
-void blocks_move(char way){
-	int i, j;
-	
-	
-	switch (way){
-		case 'A':
-		case 'a':
-			/*
-			if (map[con_y][con_x - 1] == ' ' && con_x > 0){
-				map[con_y][con_x - 1] = map[con_y][con_x];
-				map[con_y][con_x] = ' ';
-				con_x--;
-			}
-			*/
-			if (is_touch_wall('l') && con_x > 0){
-				for (i = 0 ; i < 4 ; i++){
-					for (j = 0 ; j < 4 ; j++){
-						if (long_type[i][j] == 1)
-							map[con_y - i][con_x + j] = ' ';
-					}
-				}
-				for (i = 0 ; i < 4 ; i++){
-					for (j = 0 ; j < 4 ; j++){
-						if (long_type[i][j] == 1)
-							map[con_y - i][con_x + j - 1] = to_block(long_type[i][j]);
-					}
-				}
-				con_x--;
-			}
-			break;
-		case 'D':
-		case 'd':
-			/*
-			if (map[con_y][con_x + 1] == ' ' && con_x < max_x - 1){
-				map[con_y][con_x + 1] = map[con_y][con_x];
-				map[con_y][con_x] = ' ';
-				con_x++;
-			}
-			*/
-			//if (map[con_y][con_x + 1] == ' ' && con_x < max_x - 1){
-			if (is_touch_wall('r') && con_x < max_x - 1){
-				for (i = 0 ; i < 4 ; i++){
-					for (j = 0 ; j < 4 ; j++){
-						if (long_type[i][j] == 1)
-							map[con_y - i][con_x + j] = ' ';
-					}
-				}
-				for (i = 0 ; i < 4 ; i++){
-					for (j = 0 ; j < 4 ; j++){
-						if (long_type[i][j] == 1)
-							map[con_y - i][con_x + j + 1] = to_block(long_type[i][j]);
-					}
-				}
-				con_x++;
-			}
-			break;
-		case 'S':
-		case 's':
-			/*
-			if (map[con_y + 1][con_x] == ' ' && con_y < max_y){
-				map[con_y + 1][con_x] = map[con_y][con_x];
-				map[con_y][con_x] = ' ';
-				con_y++;
-			}
-			*/
-			//if (map[con_y + 1][con_x] == ' ' && con_y < max_y){
-			if (is_touch_down() && con_y < max_y){
-				for (i = 0 ; i < 4 ; i++){
-					for (j = 0 ; j < 4 ; j++){
-						if (long_type[i][j] == 1)
-							map[con_y - i][con_x + j] = ' ';
-					}
-				}
-				for (i = 0 ; i < 4 ; i++){
-					for (j = 0 ; j < 4 ; j++){
-						if (long_type[i][j] == 1)
-							map[con_y - i + 1][con_x + j] = to_block(long_type[i][j]);
-					}
-				}
-				con_y++;
-			}
-			break;
 		case ' ':
-			
+			clear_old_blocks();
+			rotate(long_type);
+			fix_place(long_type);
+			//re_fresh();
 			break;
 	}
-	
 }
 //方塊自然落下 
 void blocks_fall(){
 	int i, j;
 	//if (map[con_y + 1][con_x] == ' '){
 	if (is_touch_down() && con_y < max_y){
-		for (i = 0 ; i < 4 ; i++){
-			for (j = 0 ; j < 4 ; j++){
-				if (long_type[i][j] == 1){
-					map[con_y - i][con_x + j] = ' ';
-				}
-			}
-		}
+		clear_old_blocks();
 		for (i = 0 ; i < 4 ; i++){
 			for (j = 0 ; j < 4 ; j++){
 				if (long_type[i][j] == 1)
@@ -272,7 +212,7 @@ void ending(){
 
 
 //轉向 
-void rotete(int arr[4][4]){
+void rotate(int arr[4][4]){
 	int i, j;
 	int brr[4][4];
 	for (i = 0 ; i < 4 ; i++)
@@ -282,6 +222,28 @@ void rotete(int arr[4][4]){
 		for (j = 0 ; j < 4 ; j++)
 			arr[i][j] = brr[i][j];
 }
+//轉向後校正位置 
+void fix_place(){
+	int i, j;
+	while (is_wall()){	
+		for (i = 0 ; i < 4 ; i++){
+			for (j = 0 ; j < 3 ; j++){
+				long_type[i][j] = long_type[i][j + 1];
+			}
+		}
+		for (i = 0 ; i < 4 ; i++)
+			long_type[i][3] = 0;
+	}
+}
+
+int is_wall(){
+	int i;
+	for (i = 0 ; i < 4 ; i++)
+		if (long_type[i][0] == 1)
+			break;
+	return (i == 4);
+}
+
 //是否碰觸下方方塊 
 int is_touch_down(){
 	int i, j;
@@ -343,28 +305,17 @@ void move_set(char way){
 			x = -1;
 		else
 			x = 1;
-		for (i = 0 ; i < 4 ; i++){
-					for (j = 0 ; j < 4 ; j++){
-						if (long_type[i][j] == 1)
-							map[con_y - i][con_x + j] = ' ';
-					}
-				}
-				for (i = 0 ; i < 4 ; i++){
-					for (j = 0 ; j < 4 ; j++){
-						if (long_type[i][j] == 1)
-							map[con_y - i][con_x + j + x] = to_block(long_type[i][j]);
-					}
-				}
-				con_x = con_x + x;
-	}
-	else if (way == 'S' || way == 's'){
-		for (i = 0 ; i < 4 ; i++){
-			for (j = 0 ; j < 4 ; j++){
-				if (long_type[i][j] == 1){
-					map[con_y - i][con_x + j] = ' ';
+		clear_old_blocks();
+			for (i = 0 ; i < 4 ; i++){
+				for (j = 0 ; j < 4 ; j++){
+					if (long_type[i][j] == 1)
+						map[con_y - i][con_x + j + x] = to_block(long_type[i][j]);
 				}
 			}
-		}
+			con_x = con_x + x;
+	}
+	else if (way == 'S' || way == 's'){
+		clear_old_blocks();
 		for (i = 0 ; i < 4 ; i++){
 			for (j = 0 ; j < 4 ; j++){
 				if (long_type[i][j] == 1)
@@ -374,6 +325,24 @@ void move_set(char way){
 		con_y++;
 	}
 }
+//設定方塊種類 
+void set_blocks(int type){
+	int i, j;
+	for (i = 0 ; i < 4 ; i++)
+		for (j = 0 ; j < 4 ; j++)
+			long_type[i][j] = shape[type][i][j];
+}
+//清除舊方塊 
+void clear_old_blocks(){
+	int i, j;
+	for (i = 0 ; i < 4 ; i++){
+		for (j = 0 ; j < 4 ; j++){
+			if (long_type[i][j] == 1)
+				map[con_y - i][con_x + j] = ' ';
+		}
+	}
+}
+
 //陣列中整數轉字元 
 char to_block(int x){
 	if (x)
