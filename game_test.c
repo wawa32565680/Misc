@@ -8,7 +8,7 @@ char map[20][20]; //map[y][x]
 const int start_x = 4, start_y = 3, max_x = 10, max_y = 20;
 int con_x, con_y, is_stop, type_id[2], first = 0;
 char blocks = 'O';
-int score = 0;
+int line = 0, score = 0;
 // 0:方形 1:長條 2:L型 3:ㄣ 型 4:T型 
 
 const int shape[7][4][4] = {
@@ -180,12 +180,14 @@ void re_fresh(){
 			z++;
 		}
 		else if (i == 8)
-			printf("     你以削除%d條線", score);
-		else if (i == 10)
-			printf("     W:掉落至最底部");
+			printf("     你以削除%d條線", line);
+		else if (i == 9)
+			printf("     得分:%d分", score);
 		else if (i == 11)
-			printf("     A:左移  S:下移  D:右移");
+			printf("     W:掉落至最底部");
 		else if (i == 12)
+			printf("     A:左移  S:下移  D:右移");
+		else if (i == 13)
 			printf("     空白鍵:旋轉");
 		printf("\n");
 	}
@@ -195,7 +197,7 @@ void re_fresh(){
 }
 
 void blocks_check(){
-	int i, j;
+	int i, j, ct = 0;
 	for (i = 0 ; i < max_y ; i++){
 		for (j = 0 ; j < max_x ; j++){
 			if (map[i][j] == ' ')
@@ -203,7 +205,26 @@ void blocks_check(){
 		}
 		if (j == max_x){
 			down_fill(i);
-			score++;
+			line++;
+			ct++;
+		}
+	}
+	switch (ct){
+		case 1:{
+			score += 40;
+			break;
+		}
+		case 2:{
+			score += 100;
+			break;
+		}
+		case 3:{
+			score += 300;
+			break;
+		}
+		case 4:{
+			score += 1200;
+			break;
 		}
 	}
 }
@@ -271,7 +292,7 @@ void blocks_fall(){
 
 void ending(){
 	system("CLS");
-	printf("~~GAME OVER~~\n你總共消除了%d條線\n", score);
+	printf("~~GAME OVER~~\n你總共消除了%d條線\n總分為%d分", line, score);
 }
 
 
