@@ -7,8 +7,8 @@
 char map[20][20]; //map[y][x]
 const int start_x = 4, start_y = 3, max_x = 10, max_y = 20;
 int con_x, con_y, is_stop;
-char blocks = '#';
-
+char blocks = 'O';
+int score = 0;
 // 0:方形 1:長條 2:L型 3:ㄣ 型 4:T型 
 
 const int shape[7][4][4] = {
@@ -96,13 +96,16 @@ int main(){
 			break;
 		type_id = rand() % 7;
 		con_y = start_y;
-		if (!is_draw_able(start_x))
+		if (!is_draw_able(start_x)){
 			for (i = 0 ; i < max_x ; i++){
 				if (is_draw_able(i)){
 					con_x = i;
 					break;
 				}
 			}
+			if (i == max_x)
+				break;
+		}
 		else
 			con_x = start_x;
 		//con_x = start_x;
@@ -155,12 +158,19 @@ int is_draw_able(int x){
 void re_fresh(){
 	system("CLS");
 	int i, j;
-	//map[con_y][con_x] = 'x';
 	for (i = 0 ; i < max_y ; i++){
 		for (j = 0 ; j < max_x ; j++){
 			printf("%c", map[i][j]);
 		}
 		printf("|");
+		if (i == 3)
+			printf("     你以削除%d條線", score);
+		else if (i == 5)
+			printf("     W:掉落至最底部");
+		else if (i == 6)
+			printf("     A:左移  S:下移  D:右移");
+		else if (i == 7)
+			printf("     空白鍵:旋轉");
 		printf("\n");
 	}
 	for (i = 0 ; i < max_x ; i++)
@@ -177,6 +187,7 @@ void blocks_check(){
 		}
 		if (j == max_x){
 			down_fill(i);
+			score++;
 		}
 	}
 }
@@ -220,6 +231,12 @@ void new_blocks_move(char way){
 				re_fresh();
 			}
 			break;
+		case 'W':
+		case 'w':
+			while(!is_stop)
+				blocks_fall();
+			re_fresh();
+			break;
 	}
 }
 //方塊自然落下 
@@ -228,36 +245,17 @@ void blocks_fall(){
 	//if (map[con_y + 1][con_x] == ' '){
 	if (is_touch_down() && con_y < max_y){
 		clear_old_blocks();
-		/*
-		for (i = 0 ; i < 4 ; i++){
-			for (j = 0 ; j < 4 ; j++){
-				if (long_type[i][j] == 1)
-					map[con_y - i + 1][con_x + j] = to_block(long_type[i][j]);
-			}
-		}
-		*/
 		draw_blocks(1,0);
 		con_y++;
 	}
 	else
 		is_stop = 1;
-	/*
-	if (map[con_y + 1][con_x] == ' '){
-		map[con_y + 1][con_x] = map[con_y][con_x];
-		map[con_y][con_x] = ' ';
-		con_y++;
-		
-	}
-	else
-		is_stop = 1;
-	re_fresh();
-	*/
 	re_fresh();
 }
 
 void ending(){
 	system("CLS");
-	printf("~~GAME OVER~~\n");
+	printf("~~GAME OVER~~\n你總共消除了%d條線\n", score);
 }
 
 
