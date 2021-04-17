@@ -7,9 +7,9 @@
 char map[20][20]; //map[y][x]
 const int start_x = 4, start_y = 0, max_x = 10, max_y = 20;
 int con_x, con_y, is_stop, type_id[2], first = 0, is_press_w = 0;
-char blocks = 'O';
+char blocks = 'H';
 int line = 0, score = 0;
-// 0:方形 1:長條 2:L型 3:ㄣ 型 4:T型 
+// 0:方形 1:長條 2:L型 3:ㄣ 型 4:T型
 const int y_start_place[7] = {1,3,2,1,2,2,1};
 const int shape[7][4][4] = {
 	{
@@ -63,29 +63,29 @@ void press_to_start(){
 	getch();
 }
 
-int is_touch_down(); //判斷是否碰觸下方方塊 
-int is_touch_wall(char); //判斷是否碰觸左右方塊 
-int is_gameover();//判斷是否遊戲結束 
-int is_draw_able(int);//判斷起始點是否能畫方塊 
-char to_block(int); //整數陣列轉圖形 
-void re_fresh(); //刷新畫面 
-void blocks_check(); //判斷橫行是否填滿消除 
-void down_fill(int); //消除後向下填滿  
-void blocks_fall(); //方塊自然落下 
-void blocks_move(char); //移動方塊 
-void new_blocks_move(char); // 新版移動方塊 
-void move_set(char); //移動方塊(函數) 
+int is_touch_down(); //判斷是否碰觸下方方塊
+int is_touch_wall(char); //判斷是否碰觸左右方塊
+int is_gameover();//判斷是否遊戲結束
+int is_draw_able(int);//判斷起始點是否能畫方塊
+char to_block(int); //整數陣列轉圖形
+void re_fresh(); //刷新畫面
+void blocks_check(); //判斷橫行是否填滿消除
+void down_fill(int); //消除後向下填滿
+void blocks_fall(); //方塊自然落下
+void blocks_move(char); //移動方塊
+void new_blocks_move(char); // 新版移動方塊
+void move_set(char); //移動方塊(函數)
 void rotate(int[4][4]);//轉向
-void fix_place();//轉向後校正位置 
-void set_blocks(int);//設定顯示方塊 
-void clear_old_blocks();//清除舊方塊 
+void fix_place();//轉向後校正位置
+void set_blocks(int);//設定顯示方塊
+void clear_old_blocks();//清除舊方塊
 void draw_blocks(int,int);
 void ending();
 
-//======== 轉向輔助 
+//======== 轉向輔助
 int is_wall(int[4][4]);//是否貼齊左
-int is_top(int[4][4]); 
-int is_rotate_able(); 
+int is_top(int[4][4]);
+int is_rotate_able();
 //======== 轉向輔助
 
 int main(){
@@ -114,6 +114,7 @@ int main(){
 		}
 		con_y = start_y + y_start_place[type_id[0]];
 		if (!is_draw_able(start_x)){
+			/*
 			for (i = 0 ; i < max_x ; i++){
 				if (is_draw_able(i)){
 					con_x = i;
@@ -122,10 +123,12 @@ int main(){
 			}
 			if (i == max_x)
 				break;
+			*/
+			break;
 		}
 		else
 			con_x = start_x;
-		
+
 		set_blocks(type_id[0]);
 		draw_blocks(0,0);
 		re_fresh();
@@ -161,7 +164,7 @@ int is_gameover(){
 	}
 	return 0;
 }
-//是否能畫方塊 
+//是否能畫方塊
 int is_draw_able(int x){
 	int i, j;
 	for (i = 0 ; i < 4 ; i++){
@@ -172,7 +175,7 @@ int is_draw_able(int x){
 	}
 	return 1;
 }
-//刷新畫面 
+//刷新畫面
 void re_fresh(){
 	system("CLS");
 	int i, j, k, z = 0;
@@ -206,7 +209,7 @@ void re_fresh(){
 		printf("=");
 	printf("=\n");
 }
-//判斷是否能消除方塊 
+//判斷是否能消除方塊
 void blocks_check(){
 	int i, j, ct = 0;
 	for (i = 0 ; i < max_y ; i++){
@@ -215,7 +218,7 @@ void blocks_check(){
 				break;
 		}
 		if (j == max_x){
-			down_fill(i);//消除方塊並向下填滿 
+			down_fill(i);//消除方塊並向下填滿
 			line++;
 			ct++;
 		}
@@ -239,7 +242,7 @@ void blocks_check(){
 		}
 	}
 }
-//消除方塊 向下填滿 
+//消除方塊 向下填滿
 void down_fill(int pai){
 	int i, j;
 	for (i = pai ; i > 0 ; i--){
@@ -288,7 +291,7 @@ void new_blocks_move(char way){
 			break;
 	}
 }
-//方塊自然落下 
+//方塊自然落下
 void blocks_fall(){
 	int i, j;
 	//if (map[con_y + 1][con_x] == ' '){
@@ -309,7 +312,7 @@ void ending(){
 }
 
 
-//轉向 
+//轉向
 void rotate(int arr[4][4]){
 	int i, j;
 	int brr[4][4];
@@ -320,10 +323,10 @@ void rotate(int arr[4][4]){
 		for (j = 0 ; j < 4 ; j++)
 			arr[i][j] = brr[i][j];
 }
-//轉向後校正位置 
+//轉向後校正位置
 void fix_place(){
 	int i, j;
-	while (is_wall(long_type)){	
+	while (is_wall(long_type)){
 		for (i = 0 ; i < 4 ; i++){
 			for (j = 0 ; j < 3 ; j++){
 				long_type[i][j] = long_type[i][j + 1];
@@ -344,7 +347,7 @@ void fix_place(){
 	}
 	*/
 }
-//是否能夠旋轉 
+//是否能夠旋轉
 int is_rotate_able(){
 	int i, j;
 	int arr[4][4];
@@ -390,7 +393,7 @@ int is_top(int arr[4][4]){
 	}
 }
 
-//是否碰觸下方方塊 
+//是否碰觸下方方塊
 int is_touch_down(){
 	int i, j;
 	int is_compare[4] = {0,0,0,0};
@@ -408,7 +411,7 @@ int is_touch_down(){
 	}
 	return 1;
 }
-//是否碰觸左右方塊 
+//是否碰觸左右方塊
 int is_touch_wall(char way){
 	int i, j, x;
 	int is_compare[4] = {0,0,0,0};
@@ -416,7 +419,7 @@ int is_touch_wall(char way){
 		x = -1;
 	else if (way == 'R' || way == 'r')
 		x = 1;
-		
+
 	for (i = 0 ; i < 4 ; i++){
 		for (j = 0 ; j < 4 ; j++){
 			if (long_type[i][j] == 1 && long_type[i][j + x] == 0){
@@ -426,7 +429,7 @@ int is_touch_wall(char way){
 		}
 	}
 	return 1;
-	
+
 	/*
 	for (i = 0 ; i < 4 ; i++){
 		for (j = 0 ; j < 4 ; j++){
@@ -443,7 +446,7 @@ int is_touch_wall(char way){
 	return 1;
 	*/
 }
-//移動函數 
+//移動函數
 void move_set(char way){
 	int x, i, j;
 	if (way == 'L' || way == 'l' || way == 'R' || way == 'r'){
@@ -477,14 +480,14 @@ void move_set(char way){
 		con_y++;
 	}
 }
-//設定方塊種類 
+//設定方塊種類
 void set_blocks(int type){
 	int i, j;
 	for (i = 0 ; i < 4 ; i++)
 		for (j = 0 ; j < 4 ; j++)
 			long_type[i][j] = shape[type][i][j];
 }
-//清除舊方塊 
+//清除舊方塊
 void clear_old_blocks(){
 	int i, j;
 	for (i = 0 ; i < 4 ; i++){
@@ -494,7 +497,7 @@ void clear_old_blocks(){
 		}
 	}
 }
-//畫方塊 
+//畫方塊
 void draw_blocks(int y,int x){
 	int i, j;
 	for (i = 0 ; i < 4 ; i++){
@@ -506,7 +509,7 @@ void draw_blocks(int y,int x){
 	}
 }
 
-//陣列中整數轉字元 
+//陣列中整數轉字元
 char to_block(int x){
 	if (x)
 		printf("%c", blocks);
