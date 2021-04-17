@@ -5,12 +5,12 @@
 #include <time.h>
 
 char map[20][20]; //map[y][x]
-const int start_x = 4, start_y = 3, max_x = 10, max_y = 20;
-int con_x, con_y, is_stop, type_id[2], first = 0;
+const int start_x = 4, start_y = 0, max_x = 10, max_y = 20;
+int con_x, con_y, is_stop, type_id[2], first = 0, is_press_w = 0;
 char blocks = 'O';
 int line = 0, score = 0;
 // 0:方形 1:長條 2:L型 3:ㄣ 型 4:T型 
-
+const int y_start_place[7] = {1,3,2,1,2,2,1};
 const int shape[7][4][4] = {
 	{
 		{1,1,0,0},
@@ -112,7 +112,7 @@ int main(){
 				type_id[1] = rand() % 7;
 			while (type_id[1] == type_id[0]);
 		}
-		con_y = start_y;
+		con_y = start_y + y_start_place[type_id[0]];
 		if (!is_draw_able(start_x)){
 			for (i = 0 ; i < max_x ; i++){
 				if (is_draw_able(i)){
@@ -132,6 +132,7 @@ int main(){
 		is_stop = 0;
 		while (!is_stop && !game_over){
 			t = 20000;
+			is_press_w = 0;
 			while (t > 0){
 				if (kbhit()){
 					c = getch();
@@ -280,6 +281,7 @@ void new_blocks_move(char way){
 			break;
 		case 'W':
 		case 'w':
+			is_press_w = 1;
 			while(!is_stop)
 				blocks_fall();
 			re_fresh();
@@ -297,7 +299,8 @@ void blocks_fall(){
 	}
 	else
 		is_stop = 1;
-	re_fresh();
+	if (!is_press_w)
+		re_fresh();
 }
 
 void ending(){
