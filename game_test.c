@@ -161,7 +161,7 @@ int is_gameover(){
 	}
 	return 0;
 }
-
+//是否能畫方塊 
 int is_draw_able(int x){
 	int i, j;
 	for (i = 0 ; i < 4 ; i++){
@@ -172,7 +172,7 @@ int is_draw_able(int x){
 	}
 	return 1;
 }
-
+//刷新畫面 
 void re_fresh(){
 	system("CLS");
 	int i, j, k, z = 0;
@@ -206,7 +206,7 @@ void re_fresh(){
 		printf("=");
 	printf("=\n");
 }
-
+//判斷是否能消除方塊 
 void blocks_check(){
 	int i, j, ct = 0;
 	for (i = 0 ; i < max_y ; i++){
@@ -215,7 +215,7 @@ void blocks_check(){
 				break;
 		}
 		if (j == max_x){
-			down_fill(i);
+			down_fill(i);//消除方塊並向下填滿 
 			line++;
 			ct++;
 		}
@@ -239,7 +239,7 @@ void blocks_check(){
 		}
 	}
 }
-
+//消除方塊 向下填滿 
 void down_fill(int pai){
 	int i, j;
 	for (i = pai ; i > 0 ; i--){
