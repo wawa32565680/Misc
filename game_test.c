@@ -101,12 +101,16 @@ int main(){
 			break;
 		if (!first){
 			type_id[0] = rand() % 7;
-			type_id[1] = rand() % 7;
+			do
+				type_id[1] = rand() % 7;
+			while (type_id[1] == type_id[0]);
 			first = !first;
 		}
 		else{
 			type_id[0] = type_id[1];
-			type_id[1] = rand() % 7;
+			do
+				type_id[1] = rand() % 7;
+			while (type_id[1] == type_id[0]);
 		}
 		con_y = start_y;
 		if (!is_draw_able(start_x)){
