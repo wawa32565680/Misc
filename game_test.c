@@ -7,10 +7,10 @@
 char map[20][20]; //map[y][x]
 const int start_x = 4, start_y = 0, max_x = 10, max_y = 20;
 int con_x, con_y, is_stop, type_id[2], first = 0, is_press_w = 0;
-char blocks = 'H';
+char blocks = 'O';
 int line = 0, score = 0;
 // 0:方形 1:長條 2:L型 3:ㄣ 型 4:T型
-const int y_start_place[7] = {1,3,2,1,2,2,1};
+const int y_start_place[7] = {1,0,1,1,1,1,1}; //{1,3,2,1,2,2,1}
 const int shape[7][4][4] = {
 	{
 		{1,1,0,0},
@@ -19,15 +19,15 @@ const int shape[7][4][4] = {
 		{0,0,0,0}
 	},
 	{
-		{1,0,0,0},
-		{1,0,0,0},
-		{1,0,0,0},
-		{1,0,0,0}
+		{1,1,1,1},
+		{0,0,0,0},
+		{0,0,0,0},
+		{0,0,0,0}
 	},
 	{
-		{1,1,0,0},
+		{1,1,1,0},
 		{1,0,0,0},
-		{1,0,0,0},
+		{0,0,0,0},
 		{0,0,0,0}
 	},
 	{
@@ -37,15 +37,15 @@ const int shape[7][4][4] = {
 		{0,0,0,0}
 	},
 	{
-		{1,0,0,0},
-		{1,1,0,0},
-		{1,0,0,0},
+		{1,1,1,0},
+		{0,1,0,0},
+		{0,0,0,0},
 		{0,0,0,0}
 	},
 	{
-		{1,1,0,0},
-		{0,1,0,0},
-		{0,1,0,0},
+		{1,1,1,0},
+		{0,0,1,0},
+		{0,0,0,0},
 		{0,0,0,0}
 	},
 	{
@@ -68,6 +68,7 @@ int is_touch_wall(char); //判斷是否碰觸左右方塊
 int is_gameover();//判斷是否遊戲結束
 int is_draw_able(int);//判斷起始點是否能畫方塊
 char to_block(int); //整數陣列轉圖形
+void draw_next_block(int);
 void re_fresh(); //刷新畫面
 void blocks_check(); //判斷橫行是否填滿消除
 void down_fill(int); //消除後向下填滿
@@ -189,7 +190,7 @@ void re_fresh(){
 		else if (i == 2 || i == 3 || i == 4 || i == 5){
 			printf("     ");
 			for (k = 0 ; k < 4 ; k++){
-				to_block(shape[type_id[1]][3 - z][k]);
+				draw_next_block(shape[type_id[1]][3 - z][k]);
 			}
 			z++;
 		}
@@ -200,7 +201,7 @@ void re_fresh(){
 		else if (i == 11)
 			printf("     W:掉落至最底部");
 		else if (i == 12)
-			printf("     A:左移  S:下移  D:右移");
+			printf("     A:左移  S:下移  D:右移  Q:離開遊戲");
 		else if (i == 13)
 			printf("     空白鍵:旋轉");
 		printf("\n");
@@ -511,6 +512,19 @@ void draw_blocks(int y,int x){
 
 //陣列中整數轉字元
 char to_block(int x){
+	/*
+	if (x)
+		printf("%c", blocks);
+	else
+		printf(" ");
+	*/
+	if (x)
+		return blocks;
+	else
+		return ' ';
+}
+
+void draw_next_block(int x){
 	if (x)
 		printf("%c", blocks);
 	else
