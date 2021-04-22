@@ -25,8 +25,8 @@ const int shape[7][4][4] = {
 		{0,0,0,0}
 	},
 	{
-		{1,1,1,0},
 		{1,0,0,0},
+		{1,1,1,0},
 		{0,0,0,0},
 		{0,0,0,0}
 	},
@@ -43,8 +43,8 @@ const int shape[7][4][4] = {
 		{0,0,0,0}
 	},
 	{
-		{1,1,1,0},
 		{0,0,1,0},
+		{1,1,1,0},
 		{0,0,0,0},
 		{0,0,0,0}
 	},
@@ -187,17 +187,17 @@ void re_fresh(){
 		printf("|");
 		if (i == 1)
 			printf("     下一個方塊是:");
-		else if (i == 2 || i == 3 || i == 4 || i == 5){
+		else if (i == 3 || i == 4 || i == 5 || i == 6){
 			printf("     ");
 			for (k = 0 ; k < 4 ; k++){
-				draw_next_block(shape[type_id[1]][3 - z][k]);
+				draw_next_block(shape[type_id[1]][k][z]);
 			}
 			z++;
 		}
 		else if (i == 8)
-			printf("     你以削除%d條線", line);
+			printf("     你以削除 %d 條線", line);
 		else if (i == 9)
-			printf("     得分:%d分", score);
+			printf("     得分: %d 分", score);
 		else if (i == 11)
 			printf("     W:掉落至最底部");
 		else if (i == 12)
@@ -309,7 +309,7 @@ void blocks_fall(){
 
 void ending(){
 	system("CLS");
-	printf("~~GAME OVER~~\n你總共消除了%d條線\n總分為%d分\n", line, score);
+	printf("~~GAME OVER~~\n你總共消除了 %d 條線\n總分為 %d 分\n", line, score);
 }
 
 
