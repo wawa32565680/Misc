@@ -135,12 +135,12 @@ int main(){
 		re_fresh();
 		is_stop = 0;
 		while (!is_stop && !game_over){
-			t = 20000;
+			t = 10000;
 			is_press_w = 0;
 			while (t > 0){
 				if (kbhit()){
 					c = getch();
-					if (c == 'Q' || c == 'q'){
+					if (c == 'Q' || c == 'q' || c == 27){
 						game_over = 1;
 						break;
 					}
@@ -255,22 +255,26 @@ void down_fill(int pai){
 //±±¨î²¾°Ê¤è¶ô
 void new_blocks_move(char way){
 	switch (way){
+		case 75:
 		case 'A':
 		case 'a':
 			if (is_touch_wall('l') && con_x > 0)
 				move_set('l');
 				break;
+		case 77:
 		case 'D':
 		case 'd':
 			if (is_touch_wall('r') && con_x < max_x - 1)
 				move_set('r');
 				break;
+		case 80:
 		case 'S':
 		case 's':
 			if (is_touch_down() && con_y < max_y)
 				move_set('s');
 				break;
 		case ' ':
+		case 72:
 			clear_old_blocks();
 			if (is_rotate_able()){
 				rotate(long_type);
@@ -283,6 +287,7 @@ void new_blocks_move(char way){
 				re_fresh();
 			}
 			break;
+		
 		case 'W':
 		case 'w':
 			is_press_w = 1;
