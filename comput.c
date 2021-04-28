@@ -14,6 +14,8 @@ float sub(float,float);
 float mul(float,float);
 float dive(float,float);
 float ori(float,float);
+void compute(formula*,int,COUNT*);
+
 
 int main(){
 	formula f[30];
@@ -31,30 +33,42 @@ int main(){
 			printf("%.0f=", f[i].num);
 		else
 			printf("%.0f%c", f[i].num, f[i].op);
-	for (i = 0 ; i < k - 1 ; i++){
-		for (j = i + 1 ; j < k ; j++){
-			if (f[j].is_counted == 0 && (f[i].op == '*' || f[i].op == '/')){
-				f[j].is_counted = 1;
-				f[i].num = oper[select_oper(f[i].op)](f[i].num,f[j].num);
-				f[i].op = f[j].op;
+	compute(f,k,oper);
+	printf("%.0f", f[0].num);
+}
+
+void compute(formula *f,int lenth,COUNT *oper){
+	int i, j;
+	for (i = 0 ; i < lenth ; i++){
+		if (f[i].is_counted == 1)
+			continue;
+		for (j = i + 1 ; j < lenth ; j++){
+			if (f[j].is_counted == 0){
+				if (f[i].op == '*' || f[i].op == '/'){
+					f[i].num = oper[select_oper(f[i].op)](f[i].num, f[j].num);
+					f[i].op = f[j].op;
+					f[j].is_counted = 1;
+				}
+				else
+					break;
 			}
 		}
 	}
-	for (i = 0 ; i < k - 1 ; i++){
-		for (j = i + 1 ; j < k ; j++){
-			if (f[j].is_counted == 0 && (f[i].op == '+' || f[i].op == '-')){
-				f[j].is_counted = 1;
-				f[i].num = oper[select_oper(f[i].op)](f[i].num, f[j].num);
-				f[i].op = f[j].op;
+	for (i = 0 ; i < lenth ; i++){
+		if (f[i].is_counted == 1)
+			continue;
+		for (j = i + 1 ; j < lenth ; j++){
+			if (f[j].is_counted == 0){
+				if (f[i].op == '+' || f[i].op == '-'){
+					f[i].num = oper[select_oper(f[i].op)](f[i].num, f[j].num);
+					f[i].op = f[j].op;
+					f[j].is_counted = 1;
+				}
+				else
+					break;
 			}
 		}
 	}
-	printf("%.2f", f[0].num);
-	/*
-	for (i = 0 ; i < k ; i++)
-		if (!f[i].is_counted)
-			printf("%.0f%c", f[i].num, f[i].op);
-	*/
 }
 
 float add(float a,float b){
