@@ -1,49 +1,86 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 typedef char STR[100];
 typedef float (*COUNT)(float,float);
 typedef struct formula{
 	float num;
-	int is_counted;
+	int is_counted, priority;
 	char op;
 }formula;
 int select_oper(char);
+int is_op(char);
+int is_count_able(formula*,int,const int);
 float add(float,float);
 float sub(float,float);
 float mul(float,float);
 float dive(float,float);
 float ori(float,float);
-void compute(formula*,int,COUNT*);
+void compute(formula*,int,COUNT*,const int prio);
 
 
 int main(){
-	formula f[30];
+	formula f[100];
 	COUNT oper[5] = {add, sub, mul, dive, ori};
 	STR str;
-	int i = 0, j = 0, k;
+	int i = 0, j = 0, k, max = 0;
+	/*
 	do{
 		scanf("%f%c", &f[i].num, &f[i].op);
 		f[i].is_counted = 0;
 		i++;
 	}while (!(f[i - 1].op == '\n' || f[i - 1].op == '='));
-	k = i;
+	*/
+	//f[0].num = 0.00000000000000000000000000000000000;
+	fgets(str,100,stdin);
+	for (i = 0 ; i < 50 ; i++){
+		f[i].num = 0;
+		f[i].priority = 0;
+		f[i].is_counted = 0;
+	}
+	for (i = 0 ; i < strlen(str) ; i++){
+		if (str[i] >= '0' && str[i] <= '9'){
+			f[j].priority = k;
+			f[j].num = f[j].num * 10 + (str[i] - '0');
+		}
+		else if (str[i] == '('){
+			k++;
+			continue;
+		}
+		else if (str[i] == ')'){
+			k--;
+			continue;
+		}
+		else if (is_op(str[i])){
+			f[j].op = str[i];
+			j++;
+		}
+	}
+	k = j;
+	/*
 	for (i = 0 ; i < k ; i++)
 		if (f[i].op == '\n')
 			printf("%.0f=", f[i].num);
 		else
 			printf("%.0f%c", f[i].num, f[i].op);
-	compute(f,k,oper);
-	printf("%.0f", f[0].num);
+	*/
+	for (i = 0 ; i < k ; i++){
+		if (f[i].priority > max)
+			max = f[i].priority;
+	}
+	//printf("max_prio=%d\n", max);
+	for (max ; max >= 0 ; max--)
+		compute(f,k,oper,max);
+	printf("=%.10g", f[0].num);
 }
 
-void compute(formula *f,int lenth,COUNT *oper){
+void compute(formula *f,int lenth,COUNT *oper,const int prio){
 	int i, j;
 	for (i = 0 ; i < lenth ; i++){
-		if (f[i].is_counted == 1)
+		if (f[i].is_counted == 1 || f[i].priority != prio)
 			continue;
 		for (j = i + 1 ; j < lenth ; j++){
-			if (f[j].is_counted == 0){
+			if (f[j].is_counted == 0 && f[j].priority == prio){
 				if (f[i].op == '*' || f[i].op == '/'){
 					f[i].num = oper[select_oper(f[i].op)](f[i].num, f[j].num);
 					f[i].op = f[j].op;
@@ -54,11 +91,12 @@ void compute(formula *f,int lenth,COUNT *oper){
 			}
 		}
 	}
+	//====================================================================================
 	for (i = 0 ; i < lenth ; i++){
-		if (f[i].is_counted == 1)
+		if (f[i].is_counted == 1 || f[i].priority != prio)
 			continue;
 		for (j = i + 1 ; j < lenth ; j++){
-			if (f[j].is_counted == 0){
+			if (f[j].is_counted == 0 && f[j].priority == prio){
 				if (f[i].op == '+' || f[i].op == '-'){
 					f[i].num = oper[select_oper(f[i].op)](f[i].num, f[j].num);
 					f[i].op = f[j].op;
@@ -68,6 +106,11 @@ void compute(formula *f,int lenth,COUNT *oper){
 					break;
 			}
 		}
+	}
+	
+	for (i = 0 ; i < lenth ; i++){
+		if (f[i].priority == prio)
+			f[i].priority--;
 	}
 }
 
@@ -106,3 +149,20 @@ int select_oper(char op){
 	}
 }
 
+int is_op(char c){
+	int i;
+	const char op[5] = {'+', '-' ,'*' ,'/', '='};
+	for (i = 0 ; i < 5 ; i++)
+		if (c == op[i]);
+			return 1;
+	return 0;
+}
+
+int is_count_able(formula *f,int lenth,const int prio){
+	int i, c = 0;
+	for (i = 0 ; i < lenth ; i++){
+		if (f[i].priority == prio)
+			c++;
+	}
+	return c > 1;
+}
