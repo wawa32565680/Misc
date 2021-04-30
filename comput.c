@@ -33,7 +33,7 @@ int main(){
 	*/
 	//f[0].num = 0.00000000000000000000000000000000000;
 	fgets(str,100,stdin);
-	for (i = 0 ; i < 50 ; i++){
+	for (i = 0 ; i < 100 ; i++){
 		f[i].num = 0;
 		f[i].priority = 0;
 		f[i].is_counted = 0;
@@ -68,10 +68,13 @@ int main(){
 		if (f[i].priority > max)
 			max = f[i].priority;
 	}
-	//printf("max_prio=%d\n", max);
+	for (i = 0 ; i < k ; i++)
+		printf("%g%c", f[i].num, f[i].op);
 	for (max ; max >= 0 ; max--)
 		compute(f,k,oper,max);
-	printf("=%.10g", f[0].num);
+	for (i = 0 ; i < k ; i++)
+		if (f[i].is_counted == 0)
+			printf("%g ", f[i].num);
 }
 
 void compute(formula *f,int lenth,COUNT *oper,const int prio){
@@ -80,7 +83,7 @@ void compute(formula *f,int lenth,COUNT *oper,const int prio){
 		if (f[i].is_counted == 1 || f[i].priority != prio)
 			continue;
 		for (j = i + 1 ; j < lenth ; j++){
-			if (f[j].is_counted == 0 && f[j].priority == prio){
+			if (f[j].is_counted == 0 && f[j].priority == prio && f[i].priority == prio){
 				if (f[i].op == '*' || f[i].op == '/'){
 					f[i].num = oper[select_oper(f[i].op)](f[i].num, f[j].num);
 					f[i].op = f[j].op;
@@ -96,7 +99,7 @@ void compute(formula *f,int lenth,COUNT *oper,const int prio){
 		if (f[i].is_counted == 1 || f[i].priority != prio)
 			continue;
 		for (j = i + 1 ; j < lenth ; j++){
-			if (f[j].is_counted == 0 && f[j].priority == prio){
+			if (f[j].is_counted == 0 && f[j].priority == prio && f[i].priority == prio){
 				if (f[i].op == '+' || f[i].op == '-'){
 					f[i].num = oper[select_oper(f[i].op)](f[i].num, f[j].num);
 					f[i].op = f[j].op;
@@ -158,11 +161,4 @@ int is_op(char c){
 	return 0;
 }
 
-int is_count_able(formula *f,int lenth,const int prio){
-	int i, c = 0;
-	for (i = 0 ; i < lenth ; i++){
-		if (f[i].priority == prio)
-			c++;
-	}
-	return c > 1;
-}
+
