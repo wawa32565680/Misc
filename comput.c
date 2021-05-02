@@ -1,3 +1,8 @@
+/*
+廢棄的程式
+廢棄的程式
+廢棄的程式
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
