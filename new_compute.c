@@ -26,7 +26,7 @@ int priority(char op){
 	switch (op){
 		case '*':	case '/':	return 2;
 		case '+':	case '-':	return 1;
-		default:				return 0;
+		default:			return 0;
 	}
 }
 
