@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #define MAX 200
 
 
@@ -24,6 +25,8 @@ int main(){
 
 int priority(char op){
 	switch (op){
+		case '#':				return 4;
+		case '^':				return 3;
 		case '*':	case '/':	return 2;
 		case '+':	case '-':	return 1;
 		default:			return 0;
@@ -35,15 +38,22 @@ void to_pos(char *in,char *out){
 	char stack[MAX] = {'\0'};
 	for (i = 0, j = 0, top = 0 ; in[i] != '\0' ; i++){
 		switch (in[i]){
+			case ' ':
+				break;
 			case '(':
 				stack[++top] = in[i];
 				break;
-			case '+': case '-': case '*': case '/':
-				out[j++] = ' ';
+			case '+': case '-': case '*': case '/': case '^':
+				
+				if (in[i] == '-' && ((!is_number(in[i - 1]) && in[i - 1] != ')') || i == 0))
+					in[i] = '#';
+				if (is_number(in[i - 1]) || priority(stack[top]) >= priority(in[i]))
+					out[j++] = ' ';
 				while (priority(stack[top]) >= priority(in[i])){
 					out[j++] = stack[top--];
 					out[j++] = ' ';
 				}
+				
 				stack[++top] = in[i];
 				break;
 			case ')':
@@ -80,7 +90,10 @@ double count(char *in){
 	puts(pos);
 	for (i = 0, top = 0, k = 0; pos[i] != '\0' ; i++){
 		switch (pos[i]){
-			case '+': case '-': case '*': case '/':
+			case '#':
+				stack[top] *= -1;
+				break;
+			case '+': case '-': case '*': case '/': case '^':
 				stack[top - 1] = cal(pos[i], stack[top - 1], stack[top]);
 				top--;
 				break;
@@ -112,6 +125,8 @@ double cal(char op,double a,double b){
 			return a * b;
 		case '/':
 			return a / b;
+		case '^':
+			return pow(a, b);
 	}
 }
 
@@ -120,4 +135,3 @@ void clear(char *str,int lenth){
 	for (i = 0 ; i < lenth ; i++)
 		str[i] = '\0';
 }
-
