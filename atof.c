@@ -13,7 +13,7 @@ int main(){
 	char in[100] = {'\0'};
 	char pos[100] = {'\0'};
 	gets(in);
-	printf("=%g", count(in));
+	printf("= %g", count(in));
 }
 
 
@@ -98,8 +98,11 @@ double count(char *in){
 				top--;
 				break;
 			case ' ':
+				/* 
 				for (j = 0 ; j < 50 ; j++)
 					opnd[j] = '\0';
+				*/
+				memset(opnd, 0, 100);
 				k = 0;
 				break;
 			default:
