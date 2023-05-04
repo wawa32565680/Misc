@@ -36,7 +36,8 @@ int priority(char op){
 
 void to_pos(char *in,char *out){
 	int i, j, top;
-	char stack[MAX] = {'\0'};
+	char stack[MAX];
+	memset(stack, 0x00, MAX);
 	for (i = 0, j = 0, top = 0 ; in[i] != '\0' ; i++){
 		switch (in[i]){
 			case ' ':
@@ -76,8 +77,10 @@ void to_pos(char *in,char *out){
 
 double count(char *in){
 	int i, j, top, k;
-	char pos[MAX] = {'\0'};
-	char opnd[10] = {'\0'};
+	char pos[MAX];
+	char opnd[10];
+	memset(pos, 0x00, MAX);
+	memset(opnd, 0x00, 10);
 	double stack[MAX] = {0.0};
 	to_pos(in,pos);
 	puts(pos);
